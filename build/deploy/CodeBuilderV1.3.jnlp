@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp spec="1.0" xmlns:jfx="http://javafx.com" href="CodeBuilderV1.3.jnlp">
+  <information>
+    <title>CodeBuilderV1.3</title>
+    <vendor>codebuilder</vendor>
+    <description>codebuilder</description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
+    <jar href="CodeBuilderV1.3.jar" size="11382" download="eager" />
+    <jar href="libs\jsoup-1.10.3.jar" size="355356" download="eager" />
+    <jar href="libs\log4j-1.2.17.jar" size="489884" download="eager" />
+  </resources>
+  <jfx:javafx-desc  width="0" height="0" main-class="codebuilder.App"  name="codebuilder" />
+  <update check="background"/>
+</jnlp>
