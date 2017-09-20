@@ -19,11 +19,6 @@
 	
 		<mkdir dir="externalLibs" />
 	
-		<copy todir="externalLibs">
-			<fileset dir="D:\Workspaces\efxlipse\CodeBuilderV1.3\lib">
-				<filename name="jsoup-1.10.3.jar"/>
-			</fileset>
-		</copy>
 	
 		<mkdir dir="project" />
 		<copy todir="project">
@@ -34,6 +29,11 @@
 		<copy todir="project">
 			<fileset dir="D:\Workspaces\efxlipse\CodeBuilderV1.3">
 				<include name="resource/**" />
+			</fileset>
+		</copy>
+		<copy todir="project">
+			<fileset dir="D:\Workspaces\efxlipse\CodeBuilderV1.3">
+				<include name="config/**" />
 			</fileset>
 		</copy>
 	
@@ -48,7 +48,6 @@
 		<!-- Copy project-libs references -->
 		<copy todir="build/libs">
 			<fileset dir="externalLibs">
-				<include name="jsoup-1.10.3.jar"/>
 			</fileset>
 		</copy>
 	
@@ -62,6 +61,11 @@
 		</copy>
 		<copy todir="build/src">
 			<fileset dir="project/resource">
+				<include name="**/*"/>
+			</fileset>
+		</copy>
+		<copy todir="build/src">
+			<fileset dir="project/config">
 				<include name="**/*"/>
 			</fileset>
 		</copy>
@@ -80,6 +84,9 @@
 			<exclude name="**/*.java"/>
 		</fileset>
 		<fileset dir="project/resource">
+			<exclude name="**/*.java"/>
+		</fileset>
+		<fileset dir="project/config">
 			<exclude name="**/*.java"/>
 		</fileset>
 		</copy>
@@ -107,7 +114,7 @@
 	
 		<fx:application id="fxApplication"
 			name="codebuilder"
-			mainClass="codebuilder.App"
+			mainClass="com.rgy.codebuilder.App"
 			toolkit="fx"
 		/>
 	

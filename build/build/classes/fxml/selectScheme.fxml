@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="codebuilder.controller.SelectSchemeController">
+<BorderPane fx:controller="com.rgy.codebuilder.controller.SelectSchemeController" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" >
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -31,9 +34,19 @@
    </top>
    <center>
       <ScrollPane fitToWidth="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
-        </content>
+         <content>
+            <AnchorPane fx:id="a0" prefHeight="332.0" prefWidth="498.0">
+               <children>
+                  <Label text="公共参数" layoutX="22.0" layoutY="14.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <Label text="输出路径" styleClass="argLabel" layoutX="28.0" layoutY="42.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <TextField styleClass="argValue" text="D:/QQPCmgr/Desktop/a" layoutX="89.0" layoutY="44.0" prefHeight="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <Label text="文件前缀" styleClass="argLabel" layoutX="22.0" layoutY="93.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <TextField styleClass="argValue" text="A" prefHeight="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <Separator layoutY="134.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
+                  <AnchorPane fx:id="a1"  layoutX="34.0" layoutY="118.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+               </children>
+            </AnchorPane>
+         </content>
       </ScrollPane>
    </center>
    <bottom>
@@ -41,11 +54,11 @@
         <items>
             <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#openDict" text="打开目录" />
             <Button layoutX="10.0" layoutY="14.0" mnemonicParsing="false" onAction="#flushDict" text="刷新目录" />
-          <Button mnemonicParsing="false" text="生成代码" />
+          <Button mnemonicParsing="false" onAction="#createCode" text="生成代码" />
         </items>
       </ToolBar>
    </bottom>
    <left>
-      <TreeView fx:id="schemeTree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <TreeView fx:id="tree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
 </BorderPane>
