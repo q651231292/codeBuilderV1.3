@@ -2,12 +2,14 @@ package codebuilder.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 import codebuilder.App;
 import codebuilder.service.SchemeService;
+import codebuilder.util.FileUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -31,175 +34,200 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 
 /**
- * 作者：任冠宇
- * 时间：2017/9/16
+ * 作者：任冠宇 时间：2017/9/16
  */
-public class SelectSchemeController implements Initializable{
-
-    public App app;
-    public TreeView<String> schemeTree;
-    private String path = "scheme";
-    private SchemeService schemeService = new SchemeService();
-	@FXML AnchorPane a1;
+public class SelectSchemeController implements Initializable {
 
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //获取方案目录
-        getSchemeTree();
-    }
+	//服务层
+	private SchemeService service = new SchemeService();
+	public App app;
+	//左侧树
+	@FXML
+	TreeView<String> schemeTree;
+	//a0面板
+	@FXML
+	AnchorPane a0;
+	//a1面板
+	@FXML
+	AnchorPane a1;
 
-    private void getSchemeTree() {
-    	//判断是否存在方案目录
-    	boolean status = existScheme();
-		//如果存在
-    	if(status==true){
-            String[] schemeArray = schemeService.getSchemeList(path);
-            final TreeItem<String> treeRoot = new TreeItem<String>("方案目录");
-            for(String scheme:schemeArray){
-            	TreeItem<String> item = new TreeItem<String>(scheme);
-                treeRoot.getChildren().addAll(Arrays.asList(item));
-            }
-          //当点击方案的时候，联动出模板数据
-            schemeTree.addEventHandler(MouseEvent.MOUSE_CLICKED, (evt)->showTemplate());
-            schemeTree.setShowRoot(true);
-            schemeTree.setRoot(treeRoot);
-            treeRoot.setExpanded(true);
-    	}
-    	//如果不存在
-    	else{
-    		//创建目录
-    		File file = new File(path);
-    		boolean mkDirs = file.mkdirs();
-			if(mkDirs==true){
-				//重新获取方案目录
-				getSchemeTree();
-			}
-    	}
-    }
-
-    //显示模板中的参数
-    private Object showTemplate() {
-    	MultipleSelectionModel<TreeItem<String>> selectionModel = schemeTree.getSelectionModel();
-    	String item = selectionModel.getSelectedItem().getValue();
-		System.out.println(item);
-		if(!"方案目录".equals(item)){
-			//获取方案中的模板数据
-			List<Map<String,Object>> tempLateList  = getTempLateList(item);
-		}
-
-		return null;
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		// 获取方案目录
+		getSchemeTree();
 	}
 
-	private List<Map<String, Object>> getTempLateList(String item) {
-		String SchemeTemp = path+"/"+item;
-		File file = new File(SchemeTemp);
-		String absolutePath = file.getAbsolutePath();
-		System.out.println(absolutePath);
-		String[] list = file.list();
-		System.out.println(Arrays.toString(list));
-		Set<String> markAll = new TreeSet<>();
-		for(String f:list){
-			List<String> data = getData(SchemeTemp+"/"+f);
-			//提取模板数据中所有的标记
-			Set<String> markSet = getMarks(data);
-			//合并set
-			markAll.addAll(markSet);
+	//获取方案目录
+	private void getSchemeTree() {
+		// 判断是否存在方案目录
+		boolean status = service.existScheme();
+		// 如果存在
+		if (status == true) {
+			//获取根目录的子文件夹
+			String[] schemeArray = service.getRootChildrenDict();
+			final TreeItem<String> treeRoot = new TreeItem<String>("方案目录");
+			for (String scheme : schemeArray) {
+				TreeItem<String> item = new TreeItem<String>(scheme);
+				treeRoot.getChildren().addAll(Arrays.asList(item));
+			}
+			// 当点击方案的时候，联动出模板数据
+			schemeTree.addEventHandler(MouseEvent.MOUSE_CLICKED, (evt) -> showTemplate());
+			schemeTree.setShowRoot(true);
+			schemeTree.setRoot(treeRoot);
+			treeRoot.setExpanded(true);
 		}
-		System.out.println(markAll);
+		// 如果不存在
+		else {
+			// 创建目录
+			File file = new File(App.path);
+			boolean mkDirs = file.mkdirs();
+			if (mkDirs == true) {
+				// 重新获取方案目录
+				getSchemeTree();
+			}
+		}
+	}
 
+	// 显示模板中的参数
+	private void showTemplate() {
+		MultipleSelectionModel<TreeItem<String>> selectionModel = schemeTree.getSelectionModel();
+		String item = selectionModel.getSelectedItem().getValue();
+		if (!"方案目录".equals(item)) {
+			// 获取方案中的文件
+			Set<String> tempLateList = service.getSchemeList(item);
 
-        ObservableList<Node> nodeList = a1.getChildren();
-        a1.getChildren().removeAll(nodeList);
-		double topPlus = 30.0;
+			//在右侧显示出方案中文件，已KEY VALUE的形式出现
+			ObservableList<Node> nodeList = a1.getChildren();
+			a1.getChildren().removeAll(nodeList);
+			double topPlus = 30.0;
 
-		Label label = new Label();
-		label.setText(item);
-		AnchorPane.setTopAnchor(label, -30.0+topPlus);
-		AnchorPane.setLeftAnchor(label, 10.0);
-		a1.getChildren().add(label);
-
-
-		for(String mark:markAll){
-			//在界面上创建这些标签，用于输入参数
-			label = new Label();
-			label.setText(mark);
-			label.prefHeight(20.0);
-			AnchorPane.setTopAnchor(label, 0.0+topPlus);
+			Label label = new Label();
+			label.setText(item);
+			AnchorPane.setTopAnchor(label, -30.0 + topPlus);
 			AnchorPane.setLeftAnchor(label, 10.0);
 			a1.getChildren().add(label);
 
-			TextField text = new TextField();
-			text.prefHeight(20.0);
-			AnchorPane.setTopAnchor(text, 0.0+topPlus);
-			AnchorPane.setLeftAnchor(text, 100.0);
-			AnchorPane.setRightAnchor(text, 10.0);
-			a1.getChildren().add(text);
-			topPlus+=30;
+			for (String mark : tempLateList) {
+				// 在界面上创建这些标签，用于输入参数
+				label = new Label();
+				label.setText(mark);
+				label.prefHeight(20.0);
+				label.getStyleClass().add("argLabel");
+				AnchorPane.setTopAnchor(label, 0.0 + topPlus);
+				AnchorPane.setLeftAnchor(label, 10.0);
+				a1.getChildren().add(label);
 
+				TextField text = new TextField("A");
+				text.prefHeight(20.0);
+				text.getStyleClass().add("argValue");
+				AnchorPane.setTopAnchor(text, 0.0 + topPlus);
+				AnchorPane.setLeftAnchor(text, 100.0);
+				AnchorPane.setRightAnchor(text, 10.0);
+				a1.getChildren().add(text);
+				topPlus += 30;
 
+			}
 		}
-
-		return null;
 	}
 
-	private Set<String> getMarks(List<String> data) {
-		 Set<String> set = new TreeSet<>();
-		 String regex = "\\$\\{(.*?)\\}";
-		data.forEach(obj->{
 
-	        Pattern p = Pattern.compile(regex);
-	        Matcher m = p.matcher(obj); // 获取 matcher 对象
-	        while(m.find()) {
-	            String mark = m.group(1);
-	            set.add(mark);
-	        }
-		});
-
-		//System.out.println(set);
-		return set;
-	}
-
-	private List<String> getData(String f) {
-		File file = new File(f);
-		//System.out.println(file.getAbsolutePath());
-		List<String> list = new ArrayList<>();
-
-		try (BufferedReader br = Files.newBufferedReader(Paths.get(f))) {
-
-			//br returns as stream and convert it into a List
-			list = br.lines().collect(Collectors.toList());
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		//list.forEach(System.out::println);
-
-		return list;
-	}
-
-	//判断是否存在方案目录
-    private boolean existScheme() {
-    	File file = new File(path);
-		return file.exists();
-	}
-
-    //打开目录
+	// 打开目录
 	public void openDict(ActionEvent actionEvent) {
-        try {
-            String schemeAbPath = schemeService.getSchemeAbPath(path);
-            Runtime.getRuntime().exec("explorer.exe "+schemeAbPath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+		service.openDict();
+	}
 
-	//刷新目录
-    public void flushDict(ActionEvent actionEvent) {
-        getSchemeTree();
-    }
+	// 刷新目录
+	public void flushDict(ActionEvent actionEvent) {
+		getSchemeTree();
+	}
+
+	//生成代码
+	@FXML
+	public void createCode() {
+		//准备数据
+		//获取页面标签输入的参数
+		Map<String, List<String>> map = getLabelAndValue();
+		//获取选中的方案名称
+		String name = schemeTree.getSelectionModel().getSelectedItem().getValue();
+		//获取方案里面的文件路径
+		List<String> fileAbPathList = service.getSchemeFilePathList(name);
+		//获取方案里面的文件名
+		List<String> fileNameList = service.getSchemeFileNameList(name);
+		//获取文件里的数据
+		List<String> fileDataList = service.getFileData(fileAbPathList);
+		//替换文件的数据
+		fileDataList = service.replaceFileData(fileDataList,map);
+		//输出文件的数据
+		boolean status = service.outFileData(fileNameList,fileDataList,map);
+
+	}
+
+	// 得到页面上的标签和值
+	public Map<String, List<String>> getLabelAndValue() {
+		Map<String, List<String>> result = new HashMap<>();
+		Set<Node> argsLabel = a0.lookupAll(".argLabel");
+		List<String> ks = new ArrayList<>();
+		argsLabel.forEach(node -> {
+			Label l = (Label) node;
+			String text = l.getText();
+			ks.add(text);
+		});
+		result.put("ks", ks);
+		Set<Node> argsValue = a0.lookupAll(".argValue");
+		List<String> vs = new ArrayList<>();
+		argsValue.forEach(node -> {
+			TextField tf = (TextField) node;
+			String text = tf.getText();
+			vs.add(text);
+		});
+		result.put("vs", vs);
+		return result;
+
+	}
+
+	public Map<String, List<String>> getA1Args(List<String> labelList, List<String> textFieldList) {
+		Map<String, List<String>> result = new HashMap<>();
+		Set<Node> lookupAll;
+		// a1
+		lookupAll = a1.lookupAll("Label");
+		lookupAll.forEach(node -> {
+			Label l = (Label) node;
+			String lText = l.getText();
+			labelList.add(lText);
+		});
+		labelList.remove(0);
+		lookupAll = a1.lookupAll("TextField");
+		lookupAll.forEach(node -> {
+			TextField tf = (TextField) node;
+			String tfText = tf.getText();
+			textFieldList.add(tfText);
+		});
+		result.put("labels", labelList);
+		result.put("values", textFieldList);
+		return result;
+	}
+
+	public Map<String, List<String>> getA0Args(List<String> labelList, List<String> textFieldList) {
+		Map<String, List<String>> result = new HashMap<>();
+		// a0
+		Set<Node> lookupAll = a0.lookupAll("Label");
+		lookupAll.forEach(node -> {
+			Label l = (Label) node;
+			String lText = l.getText();
+			labelList.add(lText);
+		});
+		labelList.remove(0);
+		lookupAll = a0.lookupAll("TextField");
+		lookupAll.forEach(node -> {
+			TextField tf = (TextField) node;
+			String tfText = tf.getText();
+			textFieldList.add(tfText);
+		});
+		result.put("labels", labelList);
+		result.put("values", textFieldList);
+		return result;
+	}
 }

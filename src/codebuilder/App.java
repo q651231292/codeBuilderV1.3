@@ -16,6 +16,9 @@ import javafx.stage.Stage;
  */
 public class App extends Application{
 
+	//方案目录
+	public static String path = "scheme";
+
     //主舞台
     private Stage stage;
 
