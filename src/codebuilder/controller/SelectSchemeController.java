@@ -1,12 +1,7 @@
 package codebuilder.controller;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,14 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import codebuilder.App;
 import codebuilder.service.SchemeService;
-import codebuilder.util.FileUtil;
+import codebuilder.util.AlertUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -162,6 +153,11 @@ public class SelectSchemeController implements Initializable {
 		fileDataList = service.replaceFileData(fileDataList,map);
 		//输出文件的数据
 		boolean status = service.outFileData(fileNameList,fileDataList,map);
+		if(status){
+			AlertUtil.show("成功");
+		}else{
+			AlertUtil.show("失败");
+		}
 
 	}
 

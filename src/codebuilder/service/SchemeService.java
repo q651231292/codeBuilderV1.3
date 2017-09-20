@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -122,10 +121,6 @@ public class SchemeService {
 		return fileDataList;
 	}
 
-	public List<String> replaceFileData(List<String> fileDataList) {
-
-		return null;
-	}
 
 	public List<String> replaceFileData(List<String> fileDataList, Map<String, List<String>> map) {
 		List<String> rs = new ArrayList<>();
