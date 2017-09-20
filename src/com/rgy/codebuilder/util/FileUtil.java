@@ -1,4 +1,4 @@
-package codebuilder.util;
+package com.rgy.codebuilder.util;
 
 import java.io.File;
 import java.io.IOException;

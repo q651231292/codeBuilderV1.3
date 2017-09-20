@@ -1,4 +1,4 @@
-package codebuilder.service;
+package com.rgy.codebuilder.service;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -12,8 +12,8 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import codebuilder.App;
-import codebuilder.util.FileUtil;
+import com.rgy.codebuilder.App;
+import com.rgy.codebuilder.util.FileUtil;
 
 /**
  * 作者：任冠宇 时间：2017/9/16
@@ -93,11 +93,11 @@ public class SchemeService {
 		List<String> abPathList = new ArrayList<>();
 		File file = new File(App.path + File.separator + schemeName);
 		File[] listFiles = file.listFiles();
-		for (File f : listFiles) {
-				String abPath = f.getAbsolutePath();
-				abPathList.add(abPath);
-			}
-
+		for (int i = 0; i < listFiles.length; i++) {
+			File f = listFiles[i];
+			String abPath = f.getAbsolutePath();
+			abPathList.add(abPath);
+		}
 		return abPathList;
 
 	}
@@ -121,20 +121,19 @@ public class SchemeService {
 		return fileDataList;
 	}
 
-
 	public List<String> replaceFileData(List<String> fileDataList, Map<String, List<String>> map) {
 		List<String> rs = new ArrayList<>();
-		//所有的key
+		// 所有的key
 		List<String> ks = map.get("ks");
-		//所有的value
+		// 所有的value
 		List<String> vs = map.get("vs");
-		//替换文件数据
+		// 替换文件数据
 		for (int i = 0; i < fileDataList.size(); i++) {
 			String fileData = fileDataList.get(i);
-			for(int j=0;j<ks.size();j++){
+			for (int j = 0; j < ks.size(); j++) {
 				String k = ks.get(j);
 				String v = vs.get(j);
-				fileData = fileData.replaceAll("\\$\\{("+k+")\\}", v);
+				fileData = fileData.replaceAll("\\$\\{(" + k + ")\\}", v);
 			}
 			rs.add(fileData);
 		}
@@ -146,8 +145,8 @@ public class SchemeService {
 		File file = new File(App.path + File.separator + name);
 		String suffix = "txt";
 		String[] fs = file.list();
-		for(String f:fs){
-			rs.add(f.substring(0, f.indexOf(suffix)-1));
+		for (String f : fs) {
+			rs.add(f.substring(0, f.indexOf(suffix) - 1));
 		}
 		return rs;
 	}
@@ -160,27 +159,28 @@ public class SchemeService {
 			String outPath = list.get(0);
 			String fn = fileNameList.get(i);
 			String fd = fileDataList.get(i);
-			outPath = getFileOutPath(fd,outPath);
-			status = FileUtil.write(outPath, prefix+fn, fd);
+			outPath = getFileOutPath(fd, outPath);
+			status = FileUtil.write(outPath, prefix + fn, fd);
 		}
 		return status;
 	}
 
-    private String getFileOutPath(String fileData, String outPath) {
-        Pattern p = Pattern.compile("package(.*);");
-        Matcher m = p.matcher(fileData); // 获取 matcher 对象
-        while(m.find()) {
-            String name = m.group(1);
-            outPath = outPath+toFileSysPath(name);//把.转换成/
-        }
-        return outPath;
-    }
-    //把包名转换成操作系统的路径
-    private String toFileSysPath(String packageName) {
-        packageName = packageName.trim();
-        packageName = packageName.replace(".",File.separator);
-        packageName = File.separator+packageName;
-        return packageName;
-    }
+	private String getFileOutPath(String fileData, String outPath) {
+		Pattern p = Pattern.compile("package(.*);");
+		Matcher m = p.matcher(fileData); // 获取 matcher 对象
+		while (m.find()) {
+			String name = m.group(1);
+			outPath = outPath + toFileSysPath(name);// 把.转换成/
+		}
+		return outPath;
+	}
+
+	// 把包名转换成操作系统的路径
+	private String toFileSysPath(String packageName) {
+		packageName = packageName.trim();
+		packageName = packageName.replace(".", File.separator);
+		packageName = File.separator + packageName;
+		return packageName;
+	}
 
 }
