@@ -59,6 +59,6 @@
       </ToolBar>
    </bottom>
    <left>
-      <TreeView fx:id="schemeTree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <TreeView fx:id="tree" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </left>
 </BorderPane>

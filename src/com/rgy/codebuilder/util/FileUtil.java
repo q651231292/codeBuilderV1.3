@@ -13,18 +13,19 @@ public class FileUtil {
         fileName = fileName+".java";
         File file = new File(path);
         //如果文件夹不存在则创建
-        if (!file.exists() && !file.isDirectory()) {
+        String realPath = path + File.separator + fileName;
+		if (!file.exists() && !file.isDirectory()) {
             boolean mkdirs = file.mkdirs(); // 创建多级目录
             if (mkdirs) {
-                return write(path + "/" + fileName, data);
+                return write(realPath, data);
             }
         } else {
-            return write(path + "/" + fileName, data);
+            return write(realPath, data);
         }
         return false;
     }
 
-    public static boolean write(String path, String data) {
+    private static boolean write(String path, String data) {
         try (PrintWriter pw = new PrintWriter(new File(path));) {
             pw.write(data);
             pw.flush();

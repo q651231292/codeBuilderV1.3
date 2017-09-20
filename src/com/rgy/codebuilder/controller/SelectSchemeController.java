@@ -3,17 +3,14 @@ package com.rgy.codebuilder.controller;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
 import com.rgy.codebuilder.App;
 import com.rgy.codebuilder.service.SchemeService;
 import com.rgy.codebuilder.util.AlertUtil;
-
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -22,25 +19,22 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MultipleSelectionModel;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
 
 /**
- * 作者：任冠宇 时间：2017/9/16
+ * @author 任冠宇
+ * @date 创建时间：2017年9月20日
  */
 public class SelectSchemeController extends Ctrl implements Initializable {
 
-	//app
-	private App app;
 	// 服务层
 	private SchemeService service = new SchemeService();
 	// 左侧树
 	@FXML
-	TreeView<String> schemeTree;
+	TreeView<String> tree;
 	// a0面板
 	@FXML
 	AnchorPane a0;
@@ -48,57 +42,56 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 	@FXML
 	AnchorPane a1;
 
-	public void setApp(App app) {
-		this.app = app;
-	}
-
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
+		// 初始化方案树
+		initSchemeTree();
+	}
+
+	private void initSchemeTree() {
 		//判断是否存在方案目录，第一次启动时方案目录是不存在的，所以需要创建
 		// 判断是否存在方案目录
-		boolean status = service.existScheme();
+		boolean exist = service.existScheme(App.schemeDict);
 		// 如果存在
-		if (status == true) {
-			// 获取根目录的子文件夹
-			String[] schemeArray = service.getRootChildrenDict();
-			final TreeItem<String> treeRoot = new TreeItem<String>("方案目录");
-			for (String scheme : schemeArray) {
-				TreeItem<String> item = new TreeItem<String>(scheme);
-				treeRoot.getChildren().addAll(Arrays.asList(item));
+		if (exist) {
+			// 获取方案目录的子文件夹
+			String[] chilDictList = service.getSchemeChilDict(App.schemeDict);
+			//设置左侧树根目录的名称,名称为方案目录
+			TreeItem<String> treeRoot = new TreeItem<String>("方案目录");
+			//设置左侧树根目录的子节点,把方案目录的子目录设置为子节点
+			for (String chilDict : chilDictList) {
+				TreeItem<String> item = new TreeItem<String>(chilDict);
+				treeRoot.getChildren().add(item);
 			}
-			// 当点击方案的时候，联动出模板数据
-			schemeTree.addEventHandler(MouseEvent.MOUSE_CLICKED, (evt) -> showTemplate());
-			schemeTree.setShowRoot(true);
-			schemeTree.setRoot(treeRoot);
+			//设置节点是否展开
 			treeRoot.setExpanded(true);
+			// 当点击方案的时候，联动出模板数据
+			tree.addEventHandler(MouseEvent.MOUSE_CLICKED, (evt) -> showSchemeArgs());
+			//显示根节点
+			tree.setShowRoot(true);
+			//设置树的根节点
+			tree.setRoot(treeRoot);
 		}
 		// 如果不存在
 		else {
 			// 创建目录
-			File file = new File(App.path);
-			boolean mkDirs = file.mkdirs();
-			if (mkDirs == true) {
+			File file = new File(App.schemeDict);
+			boolean success = file.mkdirs();
+			if (success) {
 				// 重新获取方案目录
-				getSchemeTree();
+				initSchemeTree();
 			}
 		}
-		// 获取方案目录
-		getSchemeTree();
-	}
-
-	// 获取方案目录
-	private void getSchemeTree() {
-
 
 	}
 
 	// 显示模板中的参数
-	private void showTemplate() {
-		MultipleSelectionModel<TreeItem<String>> selectionModel = schemeTree.getSelectionModel();
-		String item = selectionModel.getSelectedItem().getValue();
-		if (!"方案目录".equals(item)) {
-			// 获取方案中的文件
-			Set<String> tempLateList = service.getSchemeList(item);
+	private void showSchemeArgs() {
+		MultipleSelectionModel<TreeItem<String>> selectionModel = tree.getSelectionModel();
+		String name = selectionModel.getSelectedItem().getValue();
+		if (!"方案目录".equals(name)) {
+			// 输入方案名称,获取方案中的标记,用于在页面上显示
+			Set<String> markList = service.getSchemeMarkList(name);
 
 			// 在右侧显示出方案中文件，已KEY VALUE的形式出现
 			ObservableList<Node> nodeList = a1.getChildren();
@@ -106,12 +99,12 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 			double topPlus = 30.0;
 
 			Label label = new Label();
-			label.setText(item);
+			label.setText(name);
 			AnchorPane.setTopAnchor(label, -30.0 + topPlus);
 			AnchorPane.setLeftAnchor(label, 10.0);
 			a1.getChildren().add(label);
 
-			for (String mark : tempLateList) {
+			for (String mark : markList) {
 				// 在界面上创建这些标签，用于输入参数
 				label = new Label();
 				label.setText(mark);
@@ -121,7 +114,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 				AnchorPane.setLeftAnchor(label, 10.0);
 				a1.getChildren().add(label);
 
-				TextField text = new TextField("A");
+				TextField text = new TextField("");
 				text.prefHeight(20.0);
 				text.getStyleClass().add("argValue");
 				AnchorPane.setTopAnchor(text, 0.0 + topPlus);
@@ -136,12 +129,12 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 
 	// 打开目录
 	public void openDict(ActionEvent actionEvent) {
-		service.openDict();
+		service.openDict(App.schemeDict);
 	}
 
 	// 刷新目录
 	public void flushDict(ActionEvent actionEvent) {
-		getSchemeTree();
+		initSchemeTree();
 	}
 
 	// 生成代码
@@ -151,7 +144,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 		// 获取页面标签输入的参数
 		Map<String, List<String>> map = getLabelAndValue();
 		// 获取选中的方案名称
-		String name = schemeTree.getSelectionModel().getSelectedItem().getValue();
+		String name = tree.getSelectionModel().getSelectedItem().getValue();
 		// 获取方案里面的文件路径
 		List<String> fileAbPathList = service.getSchemeFilePathList(name);
 		// 获取方案里面的文件名
@@ -173,6 +166,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 	// 得到页面上的标签和值
 	public Map<String, List<String>> getLabelAndValue() {
 		Map<String, List<String>> result = new HashMap<>();
+		//抓取key标签
 		Set<Node> argsLabel = a0.lookupAll(".argLabel");
 		List<String> ks = new ArrayList<>();
 		argsLabel.forEach(node -> {
@@ -181,6 +175,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 			ks.add(text);
 		});
 		result.put("ks", ks);
+		//抓取value标签
 		Set<Node> argsValue = a0.lookupAll(".argValue");
 		List<String> vs = new ArrayList<>();
 		argsValue.forEach(node -> {
@@ -189,50 +184,8 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 			vs.add(text);
 		});
 		result.put("vs", vs);
+		//返回
 		return result;
 
-	}
-
-	public Map<String, List<String>> getA1Args(List<String> labelList, List<String> textFieldList) {
-		Map<String, List<String>> result = new HashMap<>();
-		Set<Node> lookupAll;
-		// a1
-		lookupAll = a1.lookupAll("Label");
-		lookupAll.forEach(node -> {
-			Label l = (Label) node;
-			String lText = l.getText();
-			labelList.add(lText);
-		});
-		labelList.remove(0);
-		lookupAll = a1.lookupAll("TextField");
-		lookupAll.forEach(node -> {
-			TextField tf = (TextField) node;
-			String tfText = tf.getText();
-			textFieldList.add(tfText);
-		});
-		result.put("labels", labelList);
-		result.put("values", textFieldList);
-		return result;
-	}
-
-	public Map<String, List<String>> getA0Args(List<String> labelList, List<String> textFieldList) {
-		Map<String, List<String>> result = new HashMap<>();
-		// a0
-		Set<Node> lookupAll = a0.lookupAll("Label");
-		lookupAll.forEach(node -> {
-			Label l = (Label) node;
-			String lText = l.getText();
-			labelList.add(lText);
-		});
-		labelList.remove(0);
-		lookupAll = a0.lookupAll("TextField");
-		lookupAll.forEach(node -> {
-			TextField tf = (TextField) node;
-			String tfText = tf.getText();
-			textFieldList.add(tfText);
-		});
-		result.put("labels", labelList);
-		result.put("values", textFieldList);
-		return result;
 	}
 }

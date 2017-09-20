@@ -16,7 +16,8 @@ import com.rgy.codebuilder.App;
 import com.rgy.codebuilder.util.FileUtil;
 
 /**
- * 作者：任冠宇 时间：2017/9/16
+ * @author 任冠宇
+ * @date 创建时间：2017年9月20日
  */
 public class SchemeService {
 
@@ -33,38 +34,52 @@ public class SchemeService {
 		return set;
 	}
 
-	public String[] getRootChildrenDict() {
-		File file = new File(App.path);
+	/**
+	 * 获取方案目录的子文件夹
+	 * @return
+	 */
+	public String[] getSchemeChilDict(String path) {
+		File file = new File(path);
+		//获取输入路径的文件列表
 		String[] list = file.list();
 		return list;
 	}
 
-	public void openDict() {
-		File file = new File(App.path);
+	/**
+	 * 打开文件夹,window下
+	 */
+	public void openDict(String path) {
+		File file = new File(path);
+		//获取目录的绝对路径
 		String abPath = file.getAbsolutePath();
 		try {
+			//调用windows的浏览器,去打开这个路径
 			Runtime.getRuntime().exec("explorer.exe " + abPath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	// 判断是否存在方案目录
-	public boolean existScheme() {
-		File file = new File(App.path);
+	/**
+	 * 判断是否存在方案目录
+	 * @return
+	 */
+	public boolean existScheme(String path) {
+		File file = new File(path);
 		return file.exists();
 	}
 
 	// 获取方案里面的标记
-	public Set<String> getSchemeList(String item) {
-		String scheme = App.path + "/" + item;
-		File file = new File(scheme);
-		String[] list = file.list();
+	public Set<String> getSchemeMarkList(String item) {
+		String schemePath = App.schemeDict + File.separator + item;
+		File file = new File(schemePath);
+		String[] schemeFileList = file.list();
 		Set<String> markAll = new TreeSet<>();
-		for (String f : list) {
-			String data = getFileContent(scheme + "/" + f);
+		for (String schemeFile : schemeFileList) {
+			String schmeFileRealPath = schemePath + File.separator + schemeFile;
+			String schemeFileData = getFileContent(schmeFileRealPath);
 			// 提取模板数据中所有的标记
-			Set<String> markSet = getMarks(data);
+			Set<String> markSet = getMarks(schemeFileData);
 			// 合并set
 			markAll.addAll(markSet);
 		}
@@ -91,7 +106,7 @@ public class SchemeService {
 
 	public List<String> getSchemeFilePathList(String schemeName) {
 		List<String> abPathList = new ArrayList<>();
-		File file = new File(App.path + File.separator + schemeName);
+		File file = new File(App.schemeDict + File.separator + schemeName);
 		File[] listFiles = file.listFiles();
 		for (int i = 0; i < listFiles.length; i++) {
 			File f = listFiles[i];
@@ -142,7 +157,7 @@ public class SchemeService {
 
 	public List<String> getSchemeFileNameList(String name) {
 		List<String> rs = new ArrayList<>();
-		File file = new File(App.path + File.separator + name);
+		File file = new File(App.schemeDict + File.separator + name);
 		String suffix = "txt";
 		String[] fs = file.list();
 		for (String f : fs) {

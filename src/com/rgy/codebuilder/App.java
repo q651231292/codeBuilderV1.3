@@ -1,10 +1,7 @@
 package com.rgy.codebuilder;
 
 import java.io.IOException;
-
 import com.rgy.codebuilder.controller.Ctrl;
-import com.rgy.codebuilder.controller.SelectSchemeController;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,7 +16,7 @@ import javafx.stage.Stage;
 public class App extends Application {
 
 	// 方案目录
-	public static String path = "scheme";
+	public static String schemeDict = "scheme";
 
 	// 主舞台
 	private Stage stage;
