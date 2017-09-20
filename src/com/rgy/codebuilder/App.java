@@ -2,6 +2,7 @@ package com.rgy.codebuilder;
 
 import java.io.IOException;
 
+import com.rgy.codebuilder.controller.Ctrl;
 import com.rgy.codebuilder.controller.SelectSchemeController;
 
 import javafx.application.Application;
@@ -12,7 +13,8 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
- * 作者：任冠宇 时间：2017/9/16
+ * @author 任冠宇
+ * @date 创建时间：2017年9月20日
  */
 public class App extends Application {
 
@@ -27,15 +29,15 @@ public class App extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-
+	public void start(Stage primaryStage){
 		// 接管主舞台
 		stage = primaryStage;
-		selectSchemeTo();
 		// 设置代码生成器的图标
 		stage.getIcons().add(new Image("/img/hammer.png"));
 		// 设置代码生成器的标题
 		stage.setTitle("代码生成器");
+		//设置舞台的场景,设置为选择
+		replaceScene("/fxml/selectScheme.fxml");
 		// 显示舞台
 		stage.show();
 	}
@@ -46,17 +48,23 @@ public class App extends Application {
 	}
 
 	/**
-	 * 跳转到选择方案页
+	 * 替换场景
+	 * @param fxml 场景地址
 	 */
-	private void selectSchemeTo() throws IOException {
+	public void replaceScene(String fxml){
 		// 加载页面
 		FXMLLoader loader = new FXMLLoader();
-		loader.setLocation(App.class.getResource("/fxml/selectScheme.fxml"));
-		Parent page = loader.load();
-		Scene scene = new Scene(page);
-		stage.setScene(scene);
+		loader.setLocation(App.class.getResource(fxml));
+		Parent page;
+		try {
+			page = loader.load();
+			Scene scene = new Scene(page);
+			stage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// 绑定控制器
-		SelectSchemeController controller = loader.getController();
-		controller.setApp(this);
+		Ctrl ctrl = loader.getController();
+		ctrl.setApp(this);
 	}
 }

@@ -32,7 +32,7 @@ import javafx.util.Callback;
 /**
  * 作者：任冠宇 时间：2017/9/16
  */
-public class SelectSchemeController implements Initializable {
+public class SelectSchemeController extends Ctrl implements Initializable {
 
 	//app
 	private App app;
@@ -70,14 +70,6 @@ public class SelectSchemeController implements Initializable {
 			schemeTree.addEventHandler(MouseEvent.MOUSE_CLICKED, (evt) -> showTemplate());
 			schemeTree.setShowRoot(true);
 			schemeTree.setRoot(treeRoot);
-			schemeTree.setCellFactory(new Callback<TreeView<String>, TreeCell<String>>() {
-				@Override
-				public TreeCell<String> call(TreeView<String> param) {
-					TreeCell cell = new TreeCell();
-//					cell.setText("aaa");
-					return cell;
-				}
-			});
 			treeRoot.setExpanded(true);
 		}
 		// 如果不存在
