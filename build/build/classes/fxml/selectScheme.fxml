@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:controller="com.rgy.codebuilder.controller.SelectSchemeController" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" >
+<BorderPane prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.rgy.codebuilder.controller.SelectSchemeController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
@@ -37,13 +37,15 @@
          <content>
             <AnchorPane fx:id="a0" prefHeight="332.0" prefWidth="498.0">
                <children>
-                  <Label text="公共参数" layoutX="22.0" layoutY="14.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <Label text="输出路径" styleClass="argLabel" layoutX="28.0" layoutY="42.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                  <TextField styleClass="argValue" text="D:/QQPCmgr/Desktop/a" layoutX="89.0" layoutY="44.0" prefHeight="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
-                  <Label text="文件前缀" styleClass="argLabel" layoutX="22.0" layoutY="93.0" prefHeight="20.0"  AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0" />
-                  <TextField styleClass="argValue" text="A" prefHeight="20.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
-                  <Separator layoutY="134.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="100.0" />
-                  <AnchorPane fx:id="a1"  layoutX="34.0" layoutY="118.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                  <Label layoutX="22.0" layoutY="14.0" prefHeight="20.0" text="公共参数" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <Label layoutX="28.0" layoutY="42.0" prefHeight="20.0" styleClass="argLabel" text="输出路径" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <TextField layoutX="89.0" layoutY="44.0" prefHeight="20.0" styleClass="argValue" text="D:/QQPCmgr/Desktop/a" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0" />
+                  <Label layoutX="22.0" layoutY="93.0" prefHeight="20.0" styleClass="argLabel" text="文件前缀" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <TextField prefHeight="20.0" styleClass="argValue" text="A" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="70.0" />
+                  <Separator layoutY="134.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="130.0" />
+                  <AnchorPane fx:id="a1" layoutX="34.0" layoutY="118.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="110.0" />
+                  <Label layoutX="20.0" layoutY="80.0" prefHeight="20.0" styleClass="argLabel" text="文件后缀" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="100.0" />
+                  <TextField fx:id="suffix" layoutX="110.0" layoutY="80.0" prefHeight="20.0" styleClass="argValue" text=".java" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="100.0" />
                </children>
             </AnchorPane>
          </content>

@@ -3,7 +3,6 @@ package com.rgy.codebuilder.service;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -166,7 +165,7 @@ public class SchemeService {
 	public List<String> getSchemeFileNameList(String name) {
 		List<String> rs = new ArrayList<>();
 		File file = new File(App.schemeDict + File.separator + name);
-		String suffix = "txt";
+		String suffix = "cb";
 		String[] fs = file.list();
 		if(fs!=null){
 			for (String f : fs) {
@@ -177,7 +176,7 @@ public class SchemeService {
 		return rs;
 	}
 
-	public boolean outFileData(List<String> fileNameList, List<String> fileDataList, Map<String, List<String>> map) {
+	public boolean outFileData(List<String> fileNameList, List<String> fileDataList, Map<String, List<String>> map, String suffix) {
 		boolean status = false;
 		List<String> list = map.get("vs");
 		String prefix = list.get(1);
@@ -186,7 +185,7 @@ public class SchemeService {
 			String fn = fileNameList.get(i);
 			String fd = fileDataList.get(i);
 			outPath = getFileOutPath(fd, outPath);
-			status = FileUtil.write(outPath, prefix + fn, fd);
+			status = FileUtil.write(outPath, prefix + fn, fd, suffix);
 		}
 		return status;
 	}

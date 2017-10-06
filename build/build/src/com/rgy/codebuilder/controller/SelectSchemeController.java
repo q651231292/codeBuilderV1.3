@@ -8,9 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+
 import com.rgy.codebuilder.App;
 import com.rgy.codebuilder.service.SchemeService;
 import com.rgy.codebuilder.util.AlertUtil;
+
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -41,6 +43,8 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 	// a1面板
 	@FXML
 	AnchorPane a1;
+	@FXML
+	TextField suffix;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -99,7 +103,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 				// 在右侧显示出方案中文件，已KEY VALUE的形式出现
 				ObservableList<Node> nodeList = a1.getChildren();
 				a1.getChildren().removeAll(nodeList);
-				double topPlus = 30.0;
+				double topPlus = 60.0;
 
 				Label label = new Label();
 				label.setText(name);
@@ -163,7 +167,7 @@ public class SelectSchemeController extends Ctrl implements Initializable {
 				// 替换文件的数据
 				fileDataList = service.replaceFileData(fileDataList, map);
 				// 输出文件的数据
-				boolean success = service.outFileData(fileNameList, fileDataList, map);
+				boolean success = service.outFileData(fileNameList, fileDataList, map, suffix.getText());
 				if (success) {
 					AlertUtil.show("成功");
 				} else {

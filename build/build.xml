@@ -23,7 +23,7 @@
 		<mkdir dir="project" />
 		<copy todir="project">
 			<fileset dir="D:\Workspaces\efxlipse\CodeBuilderV1.3">
-				<include name="src/**" />
+				<include name="config/**" />
 			</fileset>
 		</copy>
 		<copy todir="project">
@@ -33,7 +33,7 @@
 		</copy>
 		<copy todir="project">
 			<fileset dir="D:\Workspaces\efxlipse\CodeBuilderV1.3">
-				<include name="config/**" />
+				<include name="src/**" />
 			</fileset>
 		</copy>
 	

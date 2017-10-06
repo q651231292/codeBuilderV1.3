@@ -3,14 +3,12 @@ package com.rgy.codebuilder.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class FileUtil {
 
-    public static boolean write(String path, String fileName, String data) {
-        fileName = fileName+".java";
+    public static boolean write(String path, String fileName, String data, String suffix) {
+        fileName = fileName+suffix;
         File file = new File(path);
         //如果文件夹不存在则创建
         String realPath = path + File.separator + fileName;
