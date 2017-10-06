@@ -7,8 +7,8 @@ import java.io.PrintWriter;
 
 public class FileUtil {
 
-    public static boolean write(String path, String fileName, String data) {
-        fileName = fileName+".java";
+    public static boolean write(String path, String fileName, String data, String suffix) {
+        fileName = fileName+suffix;
         File file = new File(path);
         //如果文件夹不存在则创建
         String realPath = path + File.separator + fileName;
